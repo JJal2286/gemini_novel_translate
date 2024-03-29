@@ -206,6 +206,10 @@ def main(novel_id, chapter_range_start = 1, chapter_range_end=9999):
                     break
                 inlog(f"發生錯誤:{novel_translated}")
             elif novel_translated.get('candidates') is not None:
+                if novel_translated['candidates'][0].get('content') is None:
+                    inlog(f"發生錯誤:{novel_translated}")
+                    fin_translated = ''
+                    break
                 novel_translated = novel_translated['candidates'][0]['content']['parts'][0]['text']
                 fin_translated = fin_translated + novel_translated + '\n\n'
             else:
