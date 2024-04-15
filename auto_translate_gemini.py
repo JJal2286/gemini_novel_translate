@@ -122,23 +122,27 @@ def add_memo(novel_id, novel_content="") :
         temp_memo = memo_api(API_KEY,content=novel_content)
 
         if temp_memo.get('candidates') is not None:
+            if temp_memo['candidates'][0].get('content') is not None:
 
-            temp_memo = temp_memo['candidates'][0]['content']['parts'][0]['text'].split('\n')[2:]
-
-            for amemo in temp_memo :
-                try:
-                    amemoresult = amemo.split('|')[1].strip()
-                except IndexError:
-    # Ignore the exception and return the original string
-                     amemoresult = amemo.split('|')[1]
-                if len(amemo) > 23 :
-                    continue
-                if amemoresult in memo :
-                    continue
-                if amemoresult not in novel_content :
-                    continue
-
-                memo = memo + '\n' + amemo
+                temp_memo = temp_memo['candidates'][0]['content']['parts'][0]['text'].split('\n')[2:]
+    
+                for amemo in temp_memo :
+                    try:
+                        amemoresult = amemo.split('|')[1].strip()
+                    except IndexError:
+        # Ignore the exception and return the original string
+                        try:
+                            amemoresult = amemo.split('|')[1]
+                        except IndexError:
+                            continue
+                    if len(amemo) > 23 :
+                        continue
+                    if amemoresult in memo :
+                        continue
+                    if amemoresult not in novel_content :
+                        continue
+    
+                    memo = memo + '\n' + amemo
 
     #print(memo)
 
