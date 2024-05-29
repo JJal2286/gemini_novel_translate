@@ -192,9 +192,8 @@ def main(novel_id, chapter_range_start = 1, chapter_range_end=9999):
         novel_content = ''
 
         fin_translated = ''
-
+        error_flag = ''
         for split_ in novel_contents :
-
             novel_content = novel_content + split_
 
             novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1)
@@ -202,7 +201,13 @@ def main(novel_id, chapter_range_start = 1, chapter_range_end=9999):
             error = novel_translated.get('error')
 
             print(fin_translated)
-
+            if novel_translated == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
+                inlog(f"重试:{novel_translated}")
+                while novel_translated == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
+                    time.sleep(30)
+                    inlog(f"重试:{novel_translated}")
+                    novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1)
+                    error = novel_translated.get('error')
             if error is not None:
                 if 'Read timed out' in str(novel_translated) :
                     inlog(f"未知錯誤:{novel_translated}")
