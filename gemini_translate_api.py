@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import requests
 
-def api(API_KEY, content="", is_translated="",proprietary='',timeout=180, temperature=0.1, topK=1, topP=0.1):
+def api(API_KEY, content="", is_translated="",proprietary='',timeout=180, temperature=0.1, topK=1, topP=0.1, model_type="1.5"):
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-{model_type}-pro:generateContent?key={API_KEY}"
 
     headers = {
       "Content-Type": "application/json"

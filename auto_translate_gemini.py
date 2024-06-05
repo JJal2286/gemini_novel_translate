@@ -196,17 +196,23 @@ def main(novel_id, chapter_range_start = 1, chapter_range_end=9999):
         for split_ in novel_contents :
             novel_content = novel_content + split_
 
-            novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1)
+            novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1, model_type="1.5")
 
             error = novel_translated.get('error')
 
             print(fin_translated)
             if novel_translated == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
                 inlog(f"重试:{novel_translated}")
+                model_tag = 1.0
+                temp_flag = 2
                 while novel_translated == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
                     time.sleep(30)
                     inlog(f"重试:{novel_translated}")
-                    novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1)
+                    if temp_flag % 2 == 0:
+                        novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1, model_type="1.0")
+                    else:
+                        novel_translated = gemini(API_KEY=API_KEY, content=novel_content, is_translated=fin_translated,proprietary=memo, timeout=180, temperature=0.1, topK=1, topP=0.1, model_type="1.5")
+                    temp_flag = temp_flag + 1
                     error = novel_translated.get('error')
             if error is not None:
                 if 'Read timed out' in str(novel_translated) :
