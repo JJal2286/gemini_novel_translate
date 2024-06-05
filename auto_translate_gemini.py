@@ -119,8 +119,17 @@ def add_memo(novel_id, novel_content="") :
 
     memo_file.seek(0)
     if novel_content != '' :
-        temp_memo = memo_api(API_KEY,content=novel_content)
-
+        temp_memo = memo_api(API_KEY,content=novel_content, model_type="1.5")
+        if temp_memo == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
+            model_tag = 1.0
+            temp_flag = 2
+            while temp_memo == {'error': {'code': 429, 'message': 'Resource has been exhausted (e.g. check quota).', 'status': 'RESOURCE_EXHAUSTED'}}:
+                time.sleep(30)
+                if temp_flag % 2 == 0:
+                    temp_memo = memo_api(API_KEY,content=novel_content, model_type="1.0")
+                else:
+                    temp_memo = memo_api(API_KEY,content=novel_content, model_type="1.5")
+                temp_flag = temp_flag + 1
         if temp_memo.get('candidates') is not None:
             if temp_memo['candidates'][0].get('content') is not None:
 

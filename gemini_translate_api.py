@@ -171,9 +171,9 @@ def gemini_api(API_KEY, content, strong_prompts, proprietary, timeout, temperatu
 
     return response.json()
 
-def memo_api(API_KEY, content, timeout=60):
+def memo_api(API_KEY, content, timeout=60, model_type="1.5"):
 
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-{model_type}-pro:generateContent?key={API_KEY}"
 
 
     headers = {
