@@ -17,10 +17,10 @@ def get_novel_data(main_url):
     response.encoding = "utf-8"
     html_content = response.text
     soup = BeautifulSoup(html_content, "html.parser")
-    total_chapters = len(soup.find_all("dl", class_="novel_sublist2"))
+    total_chapters = len(soup.find_all("div", class_="p-eplist__sublist"))
     if total_chapters == 0 :
         return 0, ''
-    novel_title = soup.find("p", class_="novel_title").text
+    novel_title = soup.find("h1", class_="p-novel__title").text
     return total_chapters, novel_title
 
 
@@ -102,17 +102,17 @@ def main(novel_dir):
         if nothing is not None :
             break
 
-        chapter_title = soup.find("p", class_='novel_subtitle').text.strip()
-        chapter_content = soup.find("div", id='novel_honbun')
+        chapter_title = soup.find("h1", class_='p-novel__title').text.strip()
+        chapter_content = soup.find("div", class_='p-novel__text')
 
         #padding_width = len(str(total_chapters))
-        file_name = f"{chapter_title}.txt"
+        file_name = f"{chapter_title[:50]}.txt"
 
         if not is_valid_file_name(file_name):
             #print("文件名包含不符合规范的字符，修复中...")
             file_name = fix_file_name(file_name)
         #print("添加章节号及前导零到文件名中...")
-        file_name = add_chapter_number(file_name, index, 3)
+        file_name = add_chapter_number(file_name, index, 4)
 
         filename = f"{novel_dir}/{file_name}"
 
