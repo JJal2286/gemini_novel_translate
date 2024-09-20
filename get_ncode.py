@@ -103,7 +103,7 @@ def main(novel_dir):
             break
 
         chapter_title = soup.find("h1", class_='p-novel__title').text.strip()
-        chapter_content = soup.find("div", class_='p-novel__text')
+        chapter_content = soup.find("div", class_='p-novel__body')
 
         #padding_width = len(str(total_chapters))
         file_name = f"{chapter_title[:50]}.txt"
